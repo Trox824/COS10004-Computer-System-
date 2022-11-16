@@ -1,0 +1,100 @@
+;count length for validation
+      MOV R12, #0x00000000
+      MOV R4, #codemakerMSG
+      STR R4, .WriteString
+      MOV R5, #codemaker
+      STR R5, .ReadString
+      STR R5, .WriteString
+      MOV R4, #codebreakerMSG
+      STR R4, .WriteString
+      MOV R6, #codebreaker
+      STR R6, .ReadString
+      STR R6, .WriteString
+guessnumberloop:
+      MOV R4, #guessnumberMSG
+      STR R4, .WriteString
+      MOV R7, #guessnumber
+      LDR R7, .InputNum
+      STR R7, .WriteUnsignedNum
+      cmp R7, #0x00000000
+      BLT guessnumberloop
+      MOV R3, R5        ;dua codemaker name vao argument
+      BL getcode 
+      MOV R0, #1 
+      MOV R8, #secretcode ;luu secret code
+      LDR R12, [R2]
+      STR R12, [R8]
+entercode:
+      MOV R4, #linebreak
+      STR R4, .WriteString
+      STR R6, .WriteString
+      MOV R4, #querycodeMSG
+      STR R4, .WriteString
+      STR R0, .WriteUnsignedNum
+      MOV R3, R6
+      PUSH {R0}
+      BL getcode 
+      POP {R0}
+      MOV R9, #querycode
+      LDR R11, [R2]
+      STR R11, [R9]
+      CMP R0, R7
+      ADD R0, R0, #1
+      BNE entercode
+      HALT
+getcode:
+      MOV R0, #linebreak
+      STR R0, .WriteString
+      STR R3, .WriteString
+      MOV R0, #UIcodebreakerMSG
+      STR R0, .WriteString
+      MOV R0, #0x00000000 
+      MOV R2, #enteredcode
+      STR R2, .ReadString
+      STR R2, .WriteString
+      MOV R0, #0x00000000 
+      push {R2}
+      LDR R2, [R2]
+      LSR R2, R2, #24
+      CMP R2, #0x00000000
+      BEQ getcode 
+      POP {R2}
+      PUSH {R2}
+      LDRB R2, [ R2 + 4 ]
+      CMP R2, #0x00000000
+      BNE getcode
+      POP {R2}
+validateloop:
+      CMP R0, #3
+      ADD R0, R0, #1
+      BNE validateinput
+      RET
+validateinput:
+      LDRB R1, [R2 + R0]
+      CMP R1, #0x00000079 
+      BEQ validateloop
+      CMP R1, #0x00000072
+      BEQ validateloop
+      CMP R1, #0x00000070
+      BEQ validateloop
+      CMP R1, #0x00000067
+      BEQ validateloop
+      CMP R1, #0x00000063
+      BEQ validateloop
+      CMP R1, #0x00000062
+      BEQ validateloop
+      MOV R1, #0x00000000
+      B getcode
+      HALT
+codemaker: .WORD 0 
+codemakerMSG: .ASCIZ "\nCodemaker's name: "
+codebreaker: .WORD 0 
+codebreakerMSG: .ASCIZ "\nCodebreaker's name: "
+enteredcode: .WORD 0
+guessnumber: .WORD 0 
+guessnumberMSG: .ASCIZ "\nEnter Number of Guess: "
+secretcode: .WORD 4
+UIcodebreakerMSG: .ASCIZ " Please Enter a 4-Charactersecret Code "
+linebreak: .ASCIZ "\n"
+querycode: .word 0 
+querycodeMSG: .ASCIZ " This Is Guess Number: "

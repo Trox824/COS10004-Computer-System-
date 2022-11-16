@@ -1,0 +1,28 @@
+;count length for validation
+      MOV R12, #0x00000000
+      MOV R4, #codemakerMSG
+      STR R4, .WriteString
+      MOV R5, #codemaker
+      STR R5, .ReadString
+      STR R5, .WriteString
+      MOV R4, #codebreakerMSG
+      STR R4, .WriteString
+      MOV R6, #codebreaker
+      STR R6, .ReadString
+      STR R6, .WriteString
+guessnumberloop:
+      MOV R4, #guessnumberMSG
+      STR R4, .WriteString
+      MOV R7, #guessnumber
+      LDR R7, .InputNum
+      STR R7, .WriteUnsignedNum
+      cmp R7, #0x00000000
+      BLT guessnumberloop
+      HALT
+codemaker: .WORD 0
+codemakerMSG: .ASCIZ "\nCodemaker's name: "
+codebreaker: .WORD 0
+codebreakerMSG: .ASCIZ "\nCodebreaker's name: "
+enteredcode: .WORD 0
+guessnumber: .WORD 0
+guessnumberMSG: .ASCIZ "\nEnter Number of Guess: "
